@@ -89,4 +89,5 @@ dependencies {
     implementation(platform("androidx.compose:compose-bom:2025.10.01"))
 
     implementation("com.google.ai.client.generativeai:generativeai:0.9.0")
+    implementation("io.coil-kt:coil-compose:2.4.0")
 }

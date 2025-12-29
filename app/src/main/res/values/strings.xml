@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">CookWhatYouHave</string>
+    <string name="main">Main</string>
+    <string name="header1">What are we
+cooking tonight?</string>
+    <string name="label1">Ingredient (e.g Chicken)</string>
+    <string name="search">Find Recipes</string>
+    <string name="instructions">Instructions</string>
+    <string name="recipes_message">No recipes found</string>
 </resources>

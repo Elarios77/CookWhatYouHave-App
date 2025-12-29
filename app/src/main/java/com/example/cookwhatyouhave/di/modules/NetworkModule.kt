@@ -48,7 +48,7 @@ object NetworkModule {
     @Singleton
     fun provideMealApiService(client:OkHttpClient,moshi: Moshi): MealApiService {
         return Retrofit.Builder()
-            .baseUrl("www.themealdb.com/api/json/v1/1")
+            .baseUrl("https://www.themealdb.com/api/json/v1/1/")
             .addConverterFactory(MoshiConverterFactory.create(moshi))
             .client(client)
             .build()
