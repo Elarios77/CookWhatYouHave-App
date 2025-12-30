@@ -7,6 +7,9 @@ import okhttp3.Response
 interface MealRepository {
 
     suspend fun getMealsByIngredient(ingredient: String): Result<List<MealItem>>
+
+    suspend fun getMealsByCategory(category:String): Result<List<MealItem>>
+
     suspend fun getMealDetails(id: String): Result<List<MealItem>>
 
     fun getFavoriteMeals(): Flow<List<MealItem>>

@@ -17,4 +17,9 @@ interface MealApiService {
      suspend fun getMealsByIngredient(
          @Query("i") ingredient: String
      ): Response<MealResponseDto>
+
+     @GET("filter.php")
+     suspend fun getMealsByCategory(
+         @Query("c") category: String
+     ): Response<MealResponseDto>
 }

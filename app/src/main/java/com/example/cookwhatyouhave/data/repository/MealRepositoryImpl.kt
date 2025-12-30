@@ -27,6 +27,15 @@ class MealRepositoryImpl @Inject constructor(
         return Result.success(domainList)
     }
 
+    override suspend fun getMealsByCategory(category: String): Result<List<MealItem>> {
+        val dtoWrapper = remoteDataSource.fetchMealsByCategory(category) ?: return Result.failure(
+            Exception("Network error"))
+
+        val dtoList = dtoWrapper.meals?: emptyList()
+        val domainList = dtoList.map { dtoMapper(it) }
+        return Result.success(domainList)
+    }
+
     override suspend fun getMealDetails(id: String): Result<List<MealItem>> {
         val dtoWrapper = remoteDataSource.fetchMealDetails(id)
             ?: return Result.failure(Exception("Network error"))

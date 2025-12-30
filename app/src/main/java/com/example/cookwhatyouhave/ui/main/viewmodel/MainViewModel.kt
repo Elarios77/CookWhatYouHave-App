@@ -14,7 +14,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    private val getMealsByIngredientUseCase: GetMealsByIngredientUseCase
+    private val getMealsByIngredientUseCase: GetMealsByIngredientUseCase,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(MainUiState())
     val uiState: StateFlow<MainUiState> = _uiState.asStateFlow()
@@ -22,7 +22,9 @@ class MainViewModel @Inject constructor(
         _uiState.update {
             it.copy(
                 searchQuery = text,
-                searchPerformed = false
+                searchPerformed = false,
+                selectedCategory = null,
+                activeQuery = ""
             )
         }
 

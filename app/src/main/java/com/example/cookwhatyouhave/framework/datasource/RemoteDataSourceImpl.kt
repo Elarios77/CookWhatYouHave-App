@@ -35,4 +35,18 @@ class RemoteDataSourceImpl @Inject constructor(
             null
         }
     }
+
+    override suspend fun fetchMealsByCategory(category: String): MealResponseDto? {
+        return try{
+            val response = mealApi.getMealsByCategory(category)
+            if(response.isSuccessful){
+                response.body()
+            }else{
+                null
+            }
+        }catch (e: Exception){
+            e.printStackTrace()
+            null
+        }
+    }
 }
