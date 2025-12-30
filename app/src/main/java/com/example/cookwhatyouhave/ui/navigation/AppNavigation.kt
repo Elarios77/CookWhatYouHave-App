@@ -12,6 +12,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.cookwhatyouhave.ui.favorites.screen.FavoritesScreen
 import com.example.cookwhatyouhave.ui.main.screen.MainScreen
 
 enum class ScreenNavigation(val route:String, val title: String, val icon: ImageVector) {
@@ -37,13 +38,8 @@ fun AppNavigation(
                 MainScreen()
             }
             composable(route = ScreenNavigation.Favorites.route){
-                FavoriteScreenPlaceHolder()
+                FavoritesScreen()
             }
         }
     }
-}
-
-@Composable
-fun FavoriteScreenPlaceHolder() {
-
 }

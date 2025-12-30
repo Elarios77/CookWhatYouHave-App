@@ -118,13 +118,24 @@ fun MainScreenContent(
         )
         {
             Spacer(modifier = Modifier.height(50.dp))
-            Text(
-                text = stringResource(R.string.header1),
-                fontWeight = FontWeight.Bold,
-                fontSize = 32.sp,
-                textAlign = TextAlign.Center,
-                color = Color.Black
-            )
+             Column(verticalArrangement = Arrangement.Center,
+                 horizontalAlignment = Alignment.CenterHorizontally)
+             {
+                 Text(
+                     text = stringResource(R.string.header1),
+                     fontWeight = FontWeight.Bold,
+                     fontSize = 32.sp,
+                     textAlign = TextAlign.Center,
+                     color = Color.Black
+                 )
+                 Text(
+                     text = stringResource(R.string.header2),
+                     fontWeight = FontWeight.Bold,
+                     fontSize = 32.sp,
+                     textAlign = TextAlign.Center,
+                     color = Color.Black
+                 )
+             }
             Spacer(modifier = Modifier.height(32.dp))
 
             OutlinedTextField(
