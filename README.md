@@ -32,6 +32,13 @@ This project leverages **Modern Android Development (MAD)** standards:
 This app uses the public API provided by [TheMealDB](https://www.themealdb.com/api.php).
 
 ## 📸 Screenshots
+*(Check screenshots for more)*
+<div align="center">
+    <img src="screenshots/main.png" width="250"/>
+    <img src="screenshots/main_meals.png" width="250"/>
+    <img src="screenshots/meal_instructions.png" width="250"/>
+    <img src="screenshots/favorites.png" width="250"/>
+    </div>
 
 ## Future Improvements
 
