@@ -1,7 +1,11 @@
 package com.example.cookwhatyouhave.ui.main.screen
 
+import android.R.attr.label
+import android.R.attr.singleLine
+import android.R.attr.value
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,6 +22,7 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
@@ -46,7 +51,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -59,7 +67,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.example.cookwhatyouhave.R
+import com.example.cookwhatyouhave.domain.model.MealCategory
 import com.example.cookwhatyouhave.domain.model.MealItem
+import com.example.cookwhatyouhave.ui.components.CategoryFilterSelection
 import com.example.cookwhatyouhave.ui.main.viewmodel.MainUiState
 import com.example.cookwhatyouhave.ui.main.viewmodel.MainViewModel
 import com.example.cookwhatyouhave.ui.mealDetails.screen.RecipeDetailsDialog
@@ -76,15 +86,17 @@ fun MainScreen(
         uiState = uiState,
         onSearchChange = viewModel::onSearchChange,
         onSearchClick = viewModel::searchRecipes,
-        onRecipeClick = {meal ->
+        onRecipeClick = { meal ->
             selectedMealId = meal.id
-        }
+        },
+        onCategoryClick = viewModel::onCategorySelected,
+        onSubCategoryClick = viewModel::onSubCategorySelected
     )
 
-    selectedMealId?.let { mealId->
+    selectedMealId?.let { mealId ->
         RecipeDetailsDialog(
             mealId = mealId,
-            onDismiss = {selectedMealId=null}
+            onDismiss = { selectedMealId = null }
         )
     }
 
@@ -95,13 +107,22 @@ fun MainScreenContent(
     uiState: MainUiState,
     onSearchChange: (String) -> Unit,
     onSearchClick: () -> Unit,
-    onRecipeClick:(MealItem)-> Unit
+    onRecipeClick: (MealItem) -> Unit,
+    onCategoryClick: (MealCategory) -> Unit,
+    onSubCategoryClick:(String)->Unit
 ) {
     val backgroundColor = Color(0xFFFFE0B2)
+    val keyboardController = LocalSoftwareKeyboardController.current
+    val focusManager = LocalFocusManager.current
 
     Box(
         modifier = Modifier
             .fillMaxSize()
+            .pointerInput(Unit){
+                detectTapGestures(onTap = {
+                    focusManager.clearFocus()
+                })
+            }
             .background(
                 brush = Brush.verticalGradient(
                     colorStops = arrayOf(
@@ -118,27 +139,35 @@ fun MainScreenContent(
         )
         {
             Spacer(modifier = Modifier.height(50.dp))
-             Column(verticalArrangement = Arrangement.Center,
-                 horizontalAlignment = Alignment.CenterHorizontally)
-             {
-                 Text(
-                     text = stringResource(R.string.header1),
-                     fontWeight = FontWeight.Bold,
-                     fontSize = 32.sp,
-                     textAlign = TextAlign.Center,
-                     color = Color.Black
-                 )
-                 Text(
-                     text = stringResource(R.string.header2),
-                     fontWeight = FontWeight.Bold,
-                     fontSize = 32.sp,
-                     textAlign = TextAlign.Center,
-                     color = Color.Black
-                 )
-             }
+            Column(
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            )
+            {
+                Text(
+                    text = stringResource(R.string.header1),
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 32.sp,
+                    textAlign = TextAlign.Center,
+                    color = Color.Black
+                )
+                Text(
+                    text = stringResource(R.string.header2),
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 32.sp,
+                    textAlign = TextAlign.Center,
+                    color = Color.Black
+                )
+            }
             Spacer(modifier = Modifier.height(32.dp))
 
             OutlinedTextField(
+                keyboardActions = KeyboardActions(
+                    onSearch = {
+                        keyboardController?.hide()
+                        onSearchClick()
+                    }
+                ),
                 value = uiState.searchQuery,
                 onValueChange = onSearchChange,
                 label = { Text(stringResource(R.string.label1)) },
@@ -152,9 +181,19 @@ fun MainScreenContent(
             )
 
             Spacer(modifier = Modifier.height(16.dp))
+            
+            CategoryFilterSelection(
+                selectedCategory = uiState.selectedCategory,
+                onCategoryClick = onCategoryClick,
+                onSubCategoryClick = onSubCategoryClick
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
 
             Button(
-                onClick = onSearchClick,
+                onClick = {
+                    focusManager.clearFocus()
+                    onSearchClick()},
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(50.dp),
@@ -195,7 +234,7 @@ fun MainScreenContent(
                 }
             } else if (uiState.error != null) {
                 Text("Error: ${uiState.error}", color = Color.Red)
-            }else if(!uiState.isLoading && uiState.searchResults.isEmpty() && uiState.searchPerformed){
+            } else if (!uiState.isLoading && uiState.searchResults.isEmpty() && uiState.searchPerformed) {
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier.padding(top = 20.dp)
@@ -207,9 +246,11 @@ fun MainScreenContent(
                         modifier = Modifier.size(50.dp)
                     )
                     Spacer(modifier = Modifier.height(8.dp))
-                    Text(text = stringResource(R.string.recipes_message),
+                    Text(
+                        text = stringResource(R.string.recipes_message),
                         style = MaterialTheme.typography.titleMedium,
-                        color = Color.Gray)
+                        color = Color.Gray
+                    )
                 }
             }
         }
@@ -402,7 +443,9 @@ fun MainScreenPreview() {
             uiState = mockState,
             onSearchChange = {},
             onSearchClick = {},
-            onRecipeClick = {}
+            onRecipeClick = {},
+            onCategoryClick = {},
+            onSubCategoryClick = {}
         )
     }
 }

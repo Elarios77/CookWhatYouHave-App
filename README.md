@@ -4,7 +4,7 @@
 
 Built entirely with **Jetpack Compose**, this app allows users to search for recipes based on available ingredients, view detailed instructions, and save their favorite meals for **offline access** using a local database.
 
-> ⚠️ **Note:** This project is currently **Under Development**. Features are being implemented iteratively.
+> ⚠️ **Note:** Features are being implemented iteratively.
 
 ---
 
@@ -34,15 +34,16 @@ This app uses the public API provided by [TheMealDB](https://www.themealdb.com/a
 ## 📸 Screenshots
 *(Check screenshots for more)*
 <div align="center">
-    <img src="screenshots/main.png" width="250"/>
-    <img src="screenshots/main_meals.png" width="250"/>
+    <img src="screenshots/main.jpg" width="250"/>
+    <img src="screenshots/main_meals.jpg" width="250"/>
     <img src="screenshots/meal_instructions.png" width="250"/>
     <img src="screenshots/favorites.png" width="250"/>
     </div>
 
-## Future Improvements
+##  Improvements
 
-* [ ] Add Category filters
-* [ ] . . . . . .
+* [x] Add Category filters
+* [ ] Animations
+* [ ] . . . . .
 
 ---

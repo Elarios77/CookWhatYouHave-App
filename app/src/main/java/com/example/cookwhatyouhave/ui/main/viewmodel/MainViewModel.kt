@@ -2,9 +2,12 @@ package com.example.cookwhatyouhave.ui.main.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.cookwhatyouhave.domain.model.MealCategory
+import com.example.cookwhatyouhave.usecase.GetMealsByCategoryUseCase
 import com.example.cookwhatyouhave.usecase.GetMealsByIngredientUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -15,6 +18,7 @@ import javax.inject.Inject
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val getMealsByIngredientUseCase: GetMealsByIngredientUseCase,
+    private val getMealsByCategoryUseCase: GetMealsByCategoryUseCase
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(MainUiState())
     val uiState: StateFlow<MainUiState> = _uiState.asStateFlow()
@@ -65,6 +69,8 @@ class MainViewModel @Inject constructor(
             val qSingular = async { getMealsByIngredientUseCase(singularQuery) }
             val qPlural = async { getMealsByIngredientUseCase(pluralQuery) }
 
+            delay(1000L)
+
             val resultSingular = qSingular.await()
             val resultPlural = qPlural.await()
 
@@ -92,5 +98,53 @@ class MainViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    fun onCategorySelected(category: MealCategory){
+        if(_uiState.value.selectedCategory == category){
+            _uiState.update { it.copy(
+                selectedCategory = null,
+                searchResults = emptyList(),
+                activeQuery = ""
+            ) }
+            return
+        }
+        _uiState.update { it.copy(
+            selectedCategory = category,
+            searchQuery = "",
+            searchPerformed = false
+        ) }
+
+        if(category == MealCategory.OTHER)return
+
+        category.apiParam?.let { apiValue->
+            fetchMealsByCategory(apiValue)
+        }
+    }
+
+    private fun fetchMealsByCategory(categoryName: String){
+        viewModelScope.launch {
+            _uiState.update { it.copy(
+                isLoading = true,
+                error = null,
+                searchPerformed = true,
+                activeQuery = categoryName
+            ) }
+
+            getMealsByCategoryUseCase(categoryName).onSuccess { meals->
+                _uiState.update { it.copy(isLoading = false, searchResults = meals) }
+            }
+                .onFailure { error->
+                    _uiState.update { it.copy(isLoading = false,
+                        error = error.message,
+                        searchResults = emptyList()) }
+                }
+        }
+    }
+
+    fun onSubCategorySelected(subCategory:String){
+        _uiState.update { it.copy(
+            selectedCategory = MealCategory.OTHER) }
+        fetchMealsByCategory(subCategory)
     }
 }
