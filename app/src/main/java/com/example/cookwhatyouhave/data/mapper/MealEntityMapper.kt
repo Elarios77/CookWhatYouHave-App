@@ -1,6 +1,5 @@
 package com.example.cookwhatyouhave.data.mapper
 
-import android.R.attr.name
 import com.example.cookwhatyouhave.data.entity.MealEntity
 import com.example.cookwhatyouhave.domain.model.MealItem
 import javax.inject.Inject
@@ -26,7 +25,6 @@ class MealEntityMapper @Inject constructor(){
             imageUrl = item.imageUrl ?: "N/A",
             instructions = item.instructions ?:"N/A",
             ingredients = item.ingredients
-
         )
     }
 }

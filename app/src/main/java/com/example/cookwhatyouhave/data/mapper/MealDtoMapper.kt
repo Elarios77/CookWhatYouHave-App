@@ -1,6 +1,5 @@
 package com.example.cookwhatyouhave.data.mapper
 
-import android.util.Log.e
 import com.example.cookwhatyouhave.domain.model.MealItem
 import com.example.cookwhatyouhave.framework.dto.MealDto
 import javax.inject.Inject
